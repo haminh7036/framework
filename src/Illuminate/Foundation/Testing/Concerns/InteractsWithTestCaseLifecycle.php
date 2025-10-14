@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\ParallelTesting;
 use Illuminate\Support\Once;
 use Illuminate\Support\Sleep;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Validator;
 use Illuminate\View\Component;
 use Mockery;
 use Mockery\Exception\InvalidCountException;
@@ -183,10 +184,12 @@ trait InteractsWithTestCaseLifecycle
         Queue::createPayloadUsing(null);
         RegisterProviders::flushState();
         Sleep::fake(false);
+        Str::resetFactoryState();
         TrimStrings::flushState();
         TrustProxies::flushState();
         TrustHosts::flushState();
         ValidateCsrfToken::flushState();
+        Validator::flushState();
         WorkCommand::flushState();
 
         if ($this->callbackException) {

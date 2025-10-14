@@ -159,7 +159,7 @@ class BroadcastManager implements FactoryContract
     /**
      * Begin broadcasting an event.
      *
-     * @param  mixed|null  $event
+     * @param  mixed  $event
      * @return \Illuminate\Broadcasting\PendingBroadcast
      */
     public function event($event = null)
@@ -476,11 +476,14 @@ class BroadcastManager implements FactoryContract
      *
      * @param  string  $driver
      * @param  \Closure  $callback
+     *
+     * @param-closure-this  $this  $callback
+     *
      * @return $this
      */
     public function extend($driver, Closure $callback)
     {
-        $this->customCreators[$driver] = $callback;
+        $this->customCreators[$driver] = $callback->bindTo($this, $this);
 
         return $this;
     }

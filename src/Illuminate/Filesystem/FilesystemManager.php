@@ -313,6 +313,10 @@ class FilesystemManager implements FactoryContract
                 if (isset($config['visibility'])) {
                     $parent['visibility'] = $config['visibility'];
                 }
+
+                if (isset($config['throw'])) {
+                    $parent['throw'] = $config['throw'];
+                }
             }
         ));
     }
@@ -326,7 +330,7 @@ class FilesystemManager implements FactoryContract
      */
     protected function createFlysystem(FlysystemAdapter $adapter, array $config)
     {
-        if ($config['read-only'] ?? false === true) {
+        if ($config['read-only'] ?? false) {
             $adapter = new ReadOnlyFilesystemAdapter($adapter);
         }
 
@@ -426,11 +430,14 @@ class FilesystemManager implements FactoryContract
      *
      * @param  string  $driver
      * @param  \Closure  $callback
+     *
+     * @param-closure-this  $this  $callback
+     *
      * @return $this
      */
     public function extend($driver, Closure $callback)
     {
-        $this->customCreators[$driver] = $callback;
+        $this->customCreators[$driver] = $callback->bindTo($this, $this);
 
         return $this;
     }
